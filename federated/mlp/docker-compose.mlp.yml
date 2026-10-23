@@ -1,0 +1,186 @@
+# Run with docker compose -f docker-compose.mlp.yml -p fl-mlp up -d --build
+services:
+  server_mlp:
+    build: ../..
+    command: python federated/mlp/server.py --server_address 0.0.0.0:8098
+    user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
+    ports: ["8098:8098"]
+    environment:
+      MLFLOW_TRACKING_URI: http://mlflow-limits:5000
+    volumes:
+      - ../../FLdata:/app/FLdata
+      - ../../FLresults:/app/FLresults
+      - ../../FLhyperparams:/app/FLhyperparams
+    networks:
+      - default
+      - mlflow-limits-net
+    deploy:
+      resources:
+        limits:
+          cpus: "4"
+          memory: "3g"
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+
+  client1_mlp:
+    build: ../..
+    command: python federated/mlp/client.py --server_address server_mlp:8098 --client_id 1
+    user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
+    depends_on: [server_mlp]
+    environment:
+      MLFLOW_TRACKING_URI: http://mlflow-limits:5000
+    volumes:
+      - ../../FLdata:/app/FLdata
+      - ../../FLresults:/app/FLresults
+      - ../../FLhyperparams:/app/FLhyperparams
+    networks:
+      - default
+      - mlflow-limits-net
+    deploy:
+      resources:
+        limits:
+          cpus: "4"
+          memory: "3g"
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+
+  client2_mlp:
+    build: ../..
+    command: python federated/mlp/client.py --server_address server_mlp:8098 --client_id 2
+    user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
+    depends_on: [server_mlp]
+    environment:
+      MLFLOW_TRACKING_URI: http://mlflow-limits:5000
+    volumes:
+      - ../../FLdata:/app/FLdata
+      - ../../FLresults:/app/FLresults
+      - ../../FLhyperparams:/app/FLhyperparams
+    networks:
+      - default
+      - mlflow-limits-net
+    deploy:
+      resources:
+        limits:
+          cpus: "4"
+          memory: "3g"
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+
+  client3_mlp:
+    build: ../..
+    command: python federated/mlp/client.py --server_address server_mlp:8098 --client_id 3
+    user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
+    depends_on: [server_mlp]
+    environment:
+      MLFLOW_TRACKING_URI: http://mlflow-limits:5000
+    volumes:
+      - ../../FLdata:/app/FLdata
+      - ../../FLresults:/app/FLresults
+      - ../../FLhyperparams:/app/FLhyperparams
+    networks:
+      - default
+      - mlflow-limits-net
+    deploy:
+      resources:
+        limits:
+          cpus: "4"
+          memory: "3g"
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+
+  client4_mlp:
+    build: ../..
+    command: python federated/mlp/client.py --server_address server_mlp:8098 --client_id 4
+    user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
+    depends_on: [server_mlp]
+    environment:
+      MLFLOW_TRACKING_URI: http://mlflow-limits:5000
+    volumes:
+      - ../../FLdata:/app/FLdata
+      - ../../FLresults:/app/FLresults
+      - ../../FLhyperparams:/app/FLhyperparams
+    networks:
+      - default
+      - mlflow-limits-net
+    deploy:
+      resources:
+        limits:
+          cpus: "4"
+          memory: "3g"
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+
+  client5_mlp:
+    build: ../..
+    command: python federated/mlp/client.py --server_address server_mlp:8098 --client_id 5
+    user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
+    depends_on: [server_mlp]
+    environment:
+      MLFLOW_TRACKING_URI: http://mlflow-limits:5000
+    volumes:
+      - ../../FLdata:/app/FLdata
+      - ../../FLresults:/app/FLresults
+      - ../../FLhyperparams:/app/FLhyperparams
+    networks:
+      - default
+      - mlflow-limits-net
+    deploy:
+      resources:
+        limits:
+          cpus: "4"
+          memory: "3g"
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  # local-mlp:
+  #   build: ../..
+  #   command: python federated/mlp/local.py
+  #   user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
+  #   environment:
+  #     MLFLOW_TRACKING_URI: http://mlflow-limits:5000
+  #   volumes:
+  #     - ../../FLdata:/app/FLdata
+  #     - ../../FLresults:/app/FLresults
+  #     - ../../FLhyperparams:/app/FLhyperparams
+  #   networks:
+  #     - default
+  #     - mlflow-limits-net
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: "4"
+  #         memory: "3g"
+  #       reservations:
+  #         devices:
+  #           - driver: nvidia
+  #             count: 1
+  #             capabilities: [gpu]
+
+
+networks:
+  mlflow-limits-net:
+    external: true 
+  default:

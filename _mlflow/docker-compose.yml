@@ -1,0 +1,24 @@
+services:
+  mlflow-limits:
+    image: ghcr.io/mlflow/mlflow:latest
+    container_name: mlflow-limits
+    ports:
+      - "5055:5000"
+    command: >
+      mlflow server 
+      --host 0.0.0.0 
+      --port 5000 
+      --backend-store-uri file:///home/mlflow/backend 
+      --default-artifact-root file:///home/mlflow/artifacts
+      --allowed-hosts "*"
+    volumes:
+      - ./mlflow:/home/mlflow
+    environment:
+      - MLFLOW_TRACKING_URI=http://mlflow-limits:5055
+    networks:
+      - mlflow-limits-net 
+    restart: unless-stopped
+
+networks:
+  mlflow-limits-net:
+    external: true

@@ -1,0 +1,122 @@
+version: "3.8"
+
+services:
+  server:
+    build: ../..
+    command: python federated/xgboost/server.py --server_address 0.0.0.0:8097
+    user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
+    ports: ["8097:8097"]
+    environment:
+      MLFLOW_TRACKING_URI: http://mlflow-limits:5000
+    volumes:
+      - ../../FLdata:/app/FLdata
+      - ../../FLresults:/app/FLresults
+      - ../../FLhyperparams:/app/FLhyperparams
+    networks:
+      - default
+      - mlflow-limits-net
+
+  client1:
+    build: ../..
+    command: python federated/xgboost/client.py --server_address server:8097 --client_id 1
+    user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
+    depends_on: [server]
+    environment:
+      MLFLOW_TRACKING_URI: http://mlflow-limits:5000
+    volumes:
+      - ../../FLdata:/app/FLdata
+      - ../../FLresults:/app/FLresults
+      - ../../FLhyperparams:/app/FLhyperparams
+    networks:
+      - default
+      - mlflow-limits-net
+
+  client2:
+    build: ../..
+    command: python federated/xgboost/client.py --server_address server:8097 --client_id 2
+    user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
+    depends_on: [server]
+    environment:
+      MLFLOW_TRACKING_URI: http://mlflow-limits:5000
+    volumes:
+      - ../../FLdata:/app/FLdata
+      - ../../FLresults:/app/FLresults
+      - ../../FLhyperparams:/app/FLhyperparams
+    networks:
+      - default
+      - mlflow-limits-net
+
+  client3:
+    build: ../..
+    command: python federated/xgboost/client.py --server_address server:8097 --client_id 3
+    user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
+    depends_on: [server]
+    environment:
+      MLFLOW_TRACKING_URI: http://mlflow-limits:5000
+    volumes:
+      - ../../FLdata:/app/FLdata
+      - ../../FLresults:/app/FLresults
+      - ../../FLhyperparams:/app/FLhyperparams
+    networks:
+      - default
+      - mlflow-limits-net
+
+  client4:
+    build: ../..
+    command: python federated/xgboost/client.py --server_address server:8097 --client_id 4
+    user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
+    depends_on: [server]
+    environment:
+      MLFLOW_TRACKING_URI: http://mlflow-limits:5000
+    volumes:
+      - ../../FLdata:/app/FLdata
+      - ../../FLresults:/app/FLresults
+      - ../../FLhyperparams:/app/FLhyperparams
+    networks:
+      - default
+      - mlflow-limits-net
+
+  client5:
+    build: ../..
+    command: python federated/xgboost/client.py --server_address server:8097 --client_id 5
+    user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
+    depends_on: [server]
+    environment:
+      MLFLOW_TRACKING_URI: http://mlflow-limits:5000
+    volumes:
+      - ../../FLdata:/app/FLdata
+      - ../../FLresults:/app/FLresults
+      - ../../FLhyperparams:/app/FLhyperparams
+    networks:
+      - default
+      - mlflow-limits-net
+
+  # local-xgboost:
+  #   build: ../..
+  #   command: python federated/xgboost/local.py
+  #   user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
+  #   environment:
+  #     MLFLOW_TRACKING_URI: http://mlflow-limits:5000
+  #   volumes:
+  #     - ../../FLdata:/app/FLdata
+  #     - ../../FLresults:/app/FLresults
+  #     - ../../FLhyperparams:/app/FLhyperparams
+  #   networks:
+  #     - default
+  #     - mlflow-limits-net
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: "4"
+  #         memory: "3g"
+  #       reservations:
+  #         devices:
+  #           - driver: nvidia
+  #             count: 1
+  #             capabilities: [gpu]
+
+
+networks:
+  mlflow-limits-net:
+    external: true 
+  default:
